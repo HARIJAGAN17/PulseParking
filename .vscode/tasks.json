@@ -1,0 +1,55 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Backend (Spring Boot)",
+            "type": "shell",
+            "command": "cmd.exe /c \"mvnw.cmd spring-boot:run\"",
+            "options": {
+                "cwd": "${workspaceFolder}/backend",
+                "env": {
+                    "JAVA_HOME": "C:\\Program Files\\Java\\jdk-21.0.10"
+                }
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "."
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*Starting ParkPulseApplication.*",
+                    "endsPattern": ".*Started ParkPulseApplication.*"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Start Frontend (Vite)",
+            "type": "shell",
+            "command": "cmd.exe /c \"npm.cmd run dev\"",
+            "options": {
+                "cwd": "${workspaceFolder}/frontend"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "."
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*VITE.*",
+                    "endsPattern": ".*Local:.*"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        }
+    ]
+}
+

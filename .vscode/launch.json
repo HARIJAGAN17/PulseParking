@@ -1,0 +1,36 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "▶ Run ParkPulse (Local Zero-Config H2)",
+            "request": "launch",
+            "mainClass": "com.parkpulse.ParkPulseApplication",
+            "projectName": "parkpulse-backend",
+            "cwd": "${workspaceFolder}/backend",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "local"
+            }
+        },
+        {
+            "type": "java",
+            "name": "▶ Run ParkPulse (PostgreSQL)",
+            "request": "launch",
+            "mainClass": "com.parkpulse.ParkPulseApplication",
+            "projectName": "parkpulse-backend",
+            "cwd": "${workspaceFolder}/backend",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "postgres"
+            }
+        },
+        {
+            "type": "java",
+            "name": "🐞 Debug ParkPulse",
+            "request": "launch",
+            "mainClass": "com.parkpulse.ParkPulseApplication",
+            "projectName": "parkpulse-backend",
+            "cwd": "${workspaceFolder}/backend"
+        }
+    ]
+}
+

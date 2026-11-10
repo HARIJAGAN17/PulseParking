@@ -1,0 +1,13 @@
+{
+    "java.jdt.ls.java.home": "C:\\Program Files\\Java\\jdk-21.0.10",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-21",
+            "path": "C:\\Program Files\\Java\\jdk-21.0.10",
+            "default": true
+        }
+    ],
+    "java.codeGeneration.toString.template": "${object.className} [${member.name()}=${member.value}, ${otherMembers}]",
+    "spring-boot.dashboard.open-on-startup": true,
+    "java.compile.nullAnalysis.mode": "disabled"
+}
