@@ -17,10 +17,10 @@ export const LicensePlate: React.FC<LicensePlateProps> = ({
   if (isMasked || !plate || plate === '[OCCUPIED]') {
     return (
       <div
-        className={`inline-flex items-center gap-1.5 px-2.5 py-1 bg-concrete-200 border border-concrete-300 text-asphalt-700 font-mono text-xs uppercase tracking-wider rounded font-medium ${className}`}
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#F1F5F9] border border-[#E2E8F0] text-[#475569] font-mono text-xs uppercase tracking-wider rounded font-medium ${className}`}
         title="Vehicle plate masked for privacy"
       >
-        <Lock className="w-3 h-3 text-asphalt-500" />
+        <Lock className="w-3 h-3 text-[#64748B]" />
         <span>OCCUPIED</span>
       </div>
     );
@@ -34,13 +34,12 @@ export const LicensePlate: React.FC<LicensePlateProps> = ({
 
   return (
     <div
-      className={`inline-flex items-center font-mono font-bold tracking-widest text-asphalt-900 bg-white border-asphalt-800 rounded shadow-sm stamped-plate select-all ${sizeClasses} ${className}`}
+      className={`inline-flex items-center font-mono font-bold tracking-widest text-[#0F172A] bg-white border-[#142D4E] rounded shadow-sm stamped-plate select-all ${sizeClasses} ${className}`}
     >
-      <span className="text-[9px] font-sans font-extrabold text-blue-700 mr-1.5 border-r border-concrete-300 pr-1 select-none">
+      <span className="text-[9px] font-sans font-extrabold text-[#142D4E] mr-1.5 border-r border-[#CBD5E1] pr-1 select-none">
         IND
       </span>
       <span>{plate.toUpperCase()}</span>
     </div>
   );
 };
-

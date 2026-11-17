@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { AvailabilitySummary, User } from './types';
 import { api } from './api/client';
 import { useOccupancyWebSocket } from './hooks/useOccupancyWebSocket';
-import { useToast } from './context/ToastContext';
 import { Navbar } from './components/Navbar';
 import { EmployeeDashboard } from './pages/EmployeeDashboard';
 import { ValetDashboard } from './pages/ValetDashboard';
@@ -16,7 +15,6 @@ export function App() {
   const [currentView, setCurrentView] = useState<'employee' | 'valet' | 'admin'>('employee');
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [bootstrapping, setBootstrapping] = useState(true);
-  const toast = useToast();
 
   // 1. Fetch live system summary
   const refreshSummary = useCallback(() => {
@@ -70,49 +68,22 @@ export function App() {
     setCurrentView('employee');
   };
 
-  // 5. Quick Demo Login Switcher
-  const handleQuickLogin = async (email: string) => {
-    const passwordMap: Record<string, string> = {
-      'admin@parkpulse.com': 'Admin@123456',
-      'valet@parkpulse.com': 'Valet@123456',
-      'sarah.chen@acme.com': 'Employee@123456',
-      'david.miller@acme.com': 'Employee@123456',
-    };
-
-    const password = passwordMap[email] || 'Employee@123456';
-    try {
-      const user = await api.auth.login({ email, password });
-      setCurrentUser(user);
-      if (user.roles.includes('ROLE_ADMIN')) {
-        setCurrentView('admin');
-      } else if (user.roles.includes('ROLE_VALET')) {
-        setCurrentView('valet');
-      } else {
-        setCurrentView('employee');
-      }
-      refreshSummary();
-    } catch (err: any) {
-      toast.error(`Demo login error: ${err.message}`);
-    }
-  };
-
   if (bootstrapping) {
     return (
-      <div className="h-full flex items-center justify-center bg-concrete-100 font-mono text-xs text-asphalt-500">
+      <div className="h-full flex items-center justify-center bg-[#F8FAFC] font-mono text-xs text-[#64748B]">
         Loading ParkPulse Architecture...
       </div>
     );
   }
 
   return (
-    <div className="min-h-full flex flex-col bg-concrete-100">
-      {/* Universal Tactical Navbar & Demo Switcher */}
+    <div className="min-h-full flex flex-col bg-[#F8FAFC]">
+      {/* Universal Tactical Navbar */}
       <Navbar
         user={currentUser}
         summary={summary}
         onOpenProfile={() => setShowProfileModal(true)}
         onLogout={handleLogout}
-        onQuickLogin={handleQuickLogin}
         currentView={currentView}
         onChangeView={setCurrentView}
       />
@@ -137,6 +108,8 @@ export function App() {
           <>
             {currentView === 'employee' && (
               <EmployeeDashboard
+                key={currentUser?.id}
+                currentUser={currentUser}
                 summary={summary}
                 onRefreshSummary={refreshSummary}
               />

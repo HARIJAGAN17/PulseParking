@@ -80,5 +80,9 @@ public class ParkingAreaService {
         area.setActive(active);
         parkingAreaRepository.save(area);
     }
+
+    public void deleteArea(UUID areaId) {
+        setAreaActive(areaId, false);
+    }
 }
 

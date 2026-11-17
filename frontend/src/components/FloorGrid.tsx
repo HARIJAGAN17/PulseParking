@@ -9,6 +9,7 @@ interface FloorGridProps {
   isValetOrAdmin: boolean;
   onSelectSpace?: (space: FloorSpace) => void;
   onContactValet?: (assignmentId: string) => void;
+  selectedSpaceId?: string;
 }
 
 export const FloorGrid: React.FC<FloorGridProps> = ({
@@ -16,13 +17,14 @@ export const FloorGrid: React.FC<FloorGridProps> = ({
   isValetOrAdmin,
   onSelectSpace,
   onContactValet,
+  selectedSpaceId,
 }) => {
   if (spaces.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 bg-white border border-concrete-300 rounded-lg text-center">
+      <div className="flex flex-col items-center justify-center p-12 bg-white border border-[#E2E8F0] rounded-lg text-center shadow-tactile">
         <CarAnimation action="idle" size="sm" className="mb-4 opacity-40" />
-        <h3 className="font-display font-semibold text-lg text-asphalt-900">No Parking Bays Configured</h3>
-        <p className="text-sm text-asphalt-700 mt-1 max-w-sm">
+        <h3 className="font-display font-semibold text-lg text-[#142D4E]">No Parking Bays Configured</h3>
+        <p className="text-sm text-[#64748B] mt-1 max-w-sm">
           No parking spaces are currently active on this floor. Facility administrators can configure bays in the admin portal.
         </p>
       </div>
@@ -30,31 +32,35 @@ export const FloorGrid: React.FC<FloorGridProps> = ({
   }
 
   return (
-    <div className="p-4 sm:p-6 bg-white border border-concrete-300 rounded-lg shadow-tactile parking-deck-grid">
-      {/* Wayfinding Floor Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-6 border-b border-concrete-200">
+    <div className="p-4 sm:p-6 bg-white border border-[#E2E8F0] rounded-lg shadow-tactile parking-deck-grid">
+      {/* Wayfinding Floor Header & Status Legend */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-6 border-b border-[#E2E8F0]">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-xs font-bold text-asphalt-700 uppercase tracking-widest bg-concrete-200 px-2.5 py-1 rounded">
+          <span className="font-mono text-xs font-bold text-[#142D4E] uppercase tracking-wider bg-[#F1F5F9] px-2.5 py-1 rounded border border-[#E2E8F0]">
             BAY BLUEPRINT
           </span>
-          <span className="text-xs text-asphalt-700">
+          <span className="text-xs text-[#64748B]">
             {spaces.length} Usable Deck Spaces
           </span>
         </div>
 
-        {/* Legend */}
-        <div className="flex items-center gap-4 text-xs font-mono">
+        {/* Status System Legend (Per Design System: Green, Red, Amber, Slate) */}
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-mono">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-signal-emerald sensor-glow-available" />
-            <span className="text-asphalt-700">Available</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#16A34A] sensor-glow-available" />
+            <span className="text-[#334155] font-medium">Available</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-signal-amber sensor-glow-occupied" />
-            <span className="text-asphalt-700">Occupied</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#DC2626] sensor-glow-occupied" />
+            <span className="text-[#334155] font-medium">Occupied</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-slate-400" />
-            <span className="text-asphalt-700">Out of Service</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#D97706] sensor-glow-reserved" />
+            <span className="text-[#334155] font-medium">Reserved</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#64748B]" />
+            <span className="text-[#334155] font-medium">Unavailable</span>
           </div>
         </div>
       </div>
@@ -66,52 +72,57 @@ export const FloorGrid: React.FC<FloorGridProps> = ({
           const isOccupied = space.status === 'OCCUPIED';
           const isOos = space.status === 'OUT_OF_SERVICE';
           const isOwn = space.isOwnVehicle;
+          const isSelected = selectedSpaceId === space.spaceId;
 
           return (
             <div
               key={space.spaceId}
               onClick={() => onSelectSpace && onSelectSpace(space)}
               className={`
-                relative flex flex-col justify-between p-3.5 rounded border transition-all select-none
-                ${isAvailable ? 'bg-concrete-50 border-emerald-300/80 hover:border-emerald-500 hover:bg-emerald-50/40 cursor-pointer' : ''}
-                ${isOccupied ? 'bg-white border-amber-300/80' : ''}
-                ${isOos ? 'bg-concrete-200/60 border-slate-300 opacity-60 cursor-not-allowed' : ''}
-                ${isOwn ? 'ring-2 ring-signal-orange ring-offset-2 border-signal-orange bg-orange-50/20' : ''}
-                ${isValetOrAdmin ? 'cursor-pointer hover:shadow-tactile' : ''}
+                relative flex flex-col justify-between p-3.5 rounded-lg border transition-all select-none
+                ${isAvailable ? 'bg-[#DCFCE7]/50 border-[#16A34A]/30 hover:border-[#16A34A] hover:bg-[#DCFCE7]/80' : ''}
+                ${isOccupied ? 'bg-[#FEE2E2]/50 border-[#DC2626]/30 hover:border-[#DC2626]/60 hover:bg-[#FEE2E2]/70' : ''}
+                ${isOos ? 'bg-[#E2E8F0]/60 border-slate-300 opacity-60 cursor-not-allowed' : ''}
+                ${isSelected ? 'ring-2 ring-[#0D9488] ring-offset-2 border-[#0D9488]' : ''}
+                ${isOwn ? 'ring-2 ring-[#0D9488] ring-offset-2 shadow-md' : ''}
+                ${isValetOrAdmin && !isOos ? 'cursor-pointer hover:shadow-tactile' : ''}
               `}
             >
               {/* Top Sensor Bar & Bay Label */}
               <div className="flex items-center justify-between mb-2">
-                <span className="font-mono text-xs font-bold text-asphalt-900 tracking-tight">
+                <span className="font-mono text-xs font-bold text-[#142D4E] tracking-tight">
                   {space.spaceLabel}
                 </span>
 
                 {/* Overhead Ultrasonic LED Sensor */}
                 <div className="flex items-center gap-1.5">
                   {isAvailable && (
-                    <span className="w-2.5 h-2.5 rounded-full bg-signal-emerald sensor-glow-available" title="Sensor: Vacant" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#16A34A] sensor-glow-available" title="Status: Available" />
                   )}
                   {isOccupied && (
-                    <span className="w-2.5 h-2.5 rounded-full bg-signal-amber sensor-glow-occupied" title="Sensor: Occupied" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#DC2626] sensor-glow-occupied" title="Status: Occupied" />
                   )}
                   {isOos && (
-                    <span title="Bay Out of Service">
-                      <AlertTriangle className="w-3.5 h-3.5 text-slate-500" />
+                    <span title="Status: Unavailable / Maintenance">
+                      <AlertTriangle className="w-3.5 h-3.5 text-[#64748B]" />
                     </span>
                   )}
                 </div>
               </div>
 
-              {/* Bay Painted Boundary Lines Visual */}
-              <div className="my-2 border-l-2 border-r-2 border-dashed border-concrete-300 min-h-[96px] py-1.5 flex flex-col items-center justify-center">
+              {/* Bay Boundary & Center Content */}
+              <div className="my-2 border-l-2 border-r-2 border-dashed border-[#CBD5E1] min-h-[96px] py-1.5 flex flex-col items-center justify-center">
                 {isAvailable && (
-                  <div className="flex flex-col items-center justify-center py-4">
-                    <span className="font-mono text-[10px] text-emerald-800 font-bold tracking-wider uppercase bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                      VACANT
+                  <div className="flex flex-col items-center justify-center py-3 text-center">
+                    <span className="font-mono text-[10px] text-[#166534] font-bold tracking-wider uppercase bg-[#DCFCE7] px-2 py-0.5 rounded border border-[#16A34A]/30">
+                      AVAILABLE
+                    </span>
+                    <span className="text-[10px] text-[#166534] font-sans mt-1">
+                      Ready for assignment
                     </span>
                     {isValetOrAdmin && (
-                      <span className="text-[10px] text-asphalt-500 font-mono mt-2 flex items-center gap-1">
-                        + Tap to Park
+                      <span className="text-[10px] text-[#0D9488] font-mono mt-1 font-semibold flex items-center gap-0.5">
+                        + Assign
                       </span>
                     )}
                   </div>
@@ -133,14 +144,14 @@ export const FloorGrid: React.FC<FloorGridProps> = ({
                     />
 
                     {isOwn && (
-                      <div className="mt-0.5 flex items-center gap-1 px-1.5 py-0.5 bg-signal-orange text-white text-[9px] font-mono font-bold uppercase rounded">
+                      <div className="mt-0.5 flex items-center gap-1 px-1.5 py-0.5 bg-[#0D9488] text-white text-[9px] font-mono font-bold uppercase rounded">
                         <Sparkles className="w-2.5 h-2.5" />
                         YOUR VEHICLE
                       </div>
                     )}
 
                     {isValetOrAdmin && space.employeeName && (
-                      <span className="text-[10px] text-asphalt-600 truncate max-w-[110px] text-center" title={space.employeeName}>
+                      <span className="text-[10px] text-[#334155] truncate max-w-[110px] text-center" title={space.employeeName}>
                         {space.employeeName}
                       </span>
                     )}
@@ -148,18 +159,21 @@ export const FloorGrid: React.FC<FloorGridProps> = ({
                 )}
 
                 {isOos && (
-                  <div className="flex flex-col items-center justify-center text-center px-1 py-4">
-                    <span className="font-mono text-[10px] text-slate-500 uppercase tracking-tight bg-concrete-200 px-2 py-0.5 rounded">
-                      MAINTENANCE
+                  <div className="flex flex-col items-center justify-center text-center px-1 py-3">
+                    <span className="font-mono text-[10px] text-[#334155] uppercase font-bold tracking-tight bg-[#E2E8F0] px-2 py-0.5 rounded border border-slate-300">
+                      UNAVAILABLE
+                    </span>
+                    <span className="text-[10px] text-[#64748B] mt-1">
+                      Maintenance / blocked
                     </span>
                   </div>
                 )}
               </div>
 
-              {/* Footer status / Action ribbon */}
-              <div className="pt-2 border-t border-concrete-200/80 flex items-center justify-between text-[11px] font-mono">
-                <span className="text-asphalt-700">
-                  {isAvailable ? 'READY' : isOccupied ? 'IN USE' : 'CLOSED'}
+              {/* Footer Status / Action Ribbon */}
+              <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[11px] font-mono">
+                <span className={`font-semibold ${isAvailable ? 'text-[#166534]' : isOccupied ? 'text-[#991B1B]' : 'text-[#334155]'}`}>
+                  {isAvailable ? 'AVAILABLE' : isOccupied ? 'OCCUPIED' : 'BLOCKED'}
                 </span>
 
                 {isValetOrAdmin && isOccupied && space.assignmentId && (
@@ -171,10 +185,10 @@ export const FloorGrid: React.FC<FloorGridProps> = ({
                         onContactValet(space.assignmentId);
                       }
                     }}
-                    className="text-asphalt-700 hover:text-asphalt-950 p-1 hover:bg-concrete-200 rounded"
-                    title="View Contact Phone Number"
+                    className="text-[#334155] hover:text-[#142D4E] p-1 hover:bg-[#F1F5F9] rounded cursor-pointer"
+                    title="View Driver Contact Phone Number"
                   >
-                    <Phone className="w-3 h-3" />
+                    <Phone className="w-3 h-3 text-[#0D9488]" />
                   </button>
                 )}
               </div>

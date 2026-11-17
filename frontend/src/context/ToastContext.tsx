@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import { Check, AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
@@ -13,14 +13,147 @@ export interface Toast {
 
 interface ToastContextValue {
   toast: {
-    success: (message: string, title?: string) => void;
-    error: (message: string, title?: string) => void;
-    warning: (message: string, title?: string) => void;
-    info: (message: string, title?: string) => void;
+    success: (message: string, title?: string, duration?: number) => void;
+    error: (message: string, title?: string, duration?: number) => void;
+    warning: (message: string, title?: string, duration?: number) => void;
+    info: (message: string, title?: string, duration?: number) => void;
   };
 }
 
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
+
+interface ToastItemProps {
+  toast: Toast;
+  onDismiss: (id: string) => void;
+}
+
+const ToastItem: React.FC<ToastItemProps> = ({ toast, onDismiss }) => {
+  const [isExiting, setIsExiting] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const duration = toast.duration ?? 4000;
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const remainingTimeRef = useRef(duration);
+  const startTimeRef = useRef(Date.now());
+
+  const handleDismiss = useCallback(() => {
+    setIsExiting(true);
+    setTimeout(() => {
+      onDismiss(toast.id);
+    }, 200);
+  }, [onDismiss, toast.id]);
+
+  useEffect(() => {
+    if (duration <= 0) return;
+
+    if (!isPaused) {
+      startTimeRef.current = Date.now();
+      timerRef.current = setTimeout(() => {
+        handleDismiss();
+      }, remainingTimeRef.current);
+    } else {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        const elapsed = Date.now() - startTimeRef.current;
+        remainingTimeRef.current = Math.max(0, remainingTimeRef.current - elapsed);
+      }
+    }
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [isPaused, duration, handleDismiss]);
+
+  const isSuccess = toast.type === 'success';
+  const isError = toast.type === 'error';
+  const isWarning = toast.type === 'warning';
+  const isInfo = toast.type === 'info';
+
+  const progressBarColor = isSuccess
+    ? 'bg-signal-emerald'
+    : isError
+    ? 'bg-signal-rose'
+    : isWarning
+    ? 'bg-signal-amber'
+    : 'bg-asphalt-900';
+
+  return (
+    <div
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      className={`
+        relative overflow-hidden pointer-events-auto rounded-lg px-3 py-2 border shadow-tactile-card backdrop-blur-md flex gap-2.5 transition-all duration-200 max-w-sm
+        bg-white/95 text-asphalt-900 border-concrete-300
+        ${isExiting ? 'animate-toast-out' : 'animate-toast-in'}
+        ${isSuccess ? 'border-l-[3px] border-l-signal-emerald' : ''}
+        ${isError ? 'border-l-[3px] border-l-signal-rose' : ''}
+        ${isWarning ? 'border-l-[3px] border-l-signal-amber' : ''}
+        ${isInfo ? 'border-l-[3px] border-l-asphalt-900' : ''}
+        ${toast.title ? 'items-start' : 'items-center'}
+      `}
+      role="alert"
+    >
+      {/* Minimal Status Icon */}
+      <div className="shrink-0">
+        {isSuccess && (
+          <div className="w-5 h-5 rounded-full bg-emerald-50 text-signal-emerald flex items-center justify-center border border-emerald-200/60">
+            <Check className="w-3 h-3 stroke-[2.5]" />
+          </div>
+        )}
+        {isError && (
+          <div className="w-5 h-5 rounded-full bg-rose-50 text-signal-rose flex items-center justify-center border border-rose-200/60">
+            <AlertCircle className="w-3 h-3 stroke-[2.5]" />
+          </div>
+        )}
+        {isWarning && (
+          <div className="w-5 h-5 rounded-full bg-amber-50 text-signal-amber flex items-center justify-center border border-amber-200/60 font-bold">
+            <AlertTriangle className="w-3 h-3 stroke-[2.5]" />
+          </div>
+        )}
+        {isInfo && (
+          <div className="w-5 h-5 rounded-full bg-concrete-100 text-asphalt-700 flex items-center justify-center border border-concrete-200">
+            <Info className="w-3 h-3 stroke-[2.5]" />
+          </div>
+        )}
+      </div>
+
+      {/* Message Content */}
+      <div className="flex-1 min-w-0 pr-0.5">
+        {toast.title && (
+          <div className="text-xs font-semibold text-asphalt-900 leading-tight">
+            {toast.title}
+          </div>
+        )}
+        <div className={`text-xs text-asphalt-800 font-medium leading-snug break-words ${toast.title ? 'mt-0.5' : ''}`}>
+          {toast.message}
+        </div>
+      </div>
+
+      {/* Dismiss Button */}
+      <button
+        type="button"
+        onClick={handleDismiss}
+        className="text-concrete-400 hover:text-asphalt-800 hover:bg-concrete-200/60 p-1 rounded transition-colors shrink-0 cursor-pointer"
+        title="Dismiss"
+        aria-label="Dismiss notification"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
+
+      {/* Progress Timer Bar */}
+      {duration > 0 && (
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-concrete-100 overflow-hidden">
+          <div
+            className={`h-full ${progressBarColor}`}
+            style={{
+              animation: `toastProgress ${duration}ms linear forwards`,
+              animationPlayState: isPaused ? 'paused' : 'running',
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -32,19 +165,13 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const addToast = useCallback((type: ToastType, message: string, title?: string, duration = 4000) => {
     const id = Math.random().toString(36).substring(2, 9);
     setToasts((prev) => [...prev, { id, type, message, title, duration }]);
-
-    if (duration > 0) {
-      setTimeout(() => {
-        removeToast(id);
-      }, duration);
-    }
-  }, [removeToast]);
+  }, []);
 
   const toastMethods = {
-    success: (msg: string, title?: string) => addToast('success', msg, title || 'Success'),
-    error: (msg: string, title?: string) => addToast('error', msg, title || 'Error'),
-    warning: (msg: string, title?: string) => addToast('warning', msg, title || 'Notice'),
-    info: (msg: string, title?: string) => addToast('info', msg, title || 'Information'),
+    success: (msg: string, title?: string, duration?: number) => addToast('success', msg, title, duration),
+    error: (msg: string, title?: string, duration?: number) => addToast('error', msg, title, duration),
+    warning: (msg: string, title?: string, duration?: number) => addToast('warning', msg, title, duration),
+    info: (msg: string, title?: string, duration?: number) => addToast('info', msg, title, duration),
   };
 
   return (
@@ -53,75 +180,12 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       {/* Floating Toast Container */}
       <div
-        className="fixed bottom-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none select-none"
+        className="fixed bottom-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none select-none items-end max-w-sm w-full"
         aria-live="polite"
       >
-        {toasts.map((t) => {
-          const isSuccess = t.type === 'success';
-          const isError = t.type === 'error';
-          const isWarning = t.type === 'warning';
-          const isInfo = t.type === 'info';
-
-          return (
-            <div
-              key={t.id}
-              className={`
-                pointer-events-auto rounded p-3.5 border shadow-2xl flex items-start gap-3 transition-all duration-200
-                bg-asphalt-950 text-white border-concrete-300/40
-                ${isSuccess ? 'border-emerald-500/50 shadow-emerald-950/20' : ''}
-                ${isError ? 'border-red-500/50 shadow-red-950/20' : ''}
-                ${isWarning ? 'border-amber-500/50 shadow-amber-950/20' : ''}
-              `}
-              role="alert"
-            >
-              {/* Tactical Status Pill Icon */}
-              <div className="shrink-0 mt-0.5">
-                {isSuccess && (
-                  <div className="w-5 h-5 rounded bg-signal-emerald text-white flex items-center justify-center">
-                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                  </div>
-                )}
-                {isError && (
-                  <div className="w-5 h-5 rounded bg-red-600 text-white flex items-center justify-center">
-                    <AlertCircle className="w-3.5 h-3.5 stroke-[2.5]" />
-                  </div>
-                )}
-                {isWarning && (
-                  <div className="w-5 h-5 rounded bg-signal-amber text-asphalt-950 flex items-center justify-center font-bold">
-                    <AlertTriangle className="w-3.5 h-3.5 stroke-[2.5]" />
-                  </div>
-                )}
-                {isInfo && (
-                  <div className="w-5 h-5 rounded bg-concrete-700 text-white flex items-center justify-center">
-                    <Info className="w-3.5 h-3.5 stroke-[2.5]" />
-                  </div>
-                )}
-              </div>
-
-              {/* Message Content */}
-              <div className="flex-1 min-w-0 pr-1">
-                {t.title && (
-                  <div className="font-mono text-xs font-bold text-white tracking-wider uppercase mb-0.5">
-                    {t.title}
-                  </div>
-                )}
-                <div className="text-xs text-asphalt-200 leading-relaxed break-words font-sans">
-                  {t.message}
-                </div>
-              </div>
-
-              {/* Dismiss Button */}
-              <button
-                type="button"
-                onClick={() => removeToast(t.id)}
-                className="text-asphalt-400 hover:text-white p-1 rounded hover:bg-asphalt-800 transition shrink-0 cursor-pointer"
-                title="Dismiss"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          );
-        })}
+        {toasts.map((t) => (
+          <ToastItem key={t.id} toast={t} onDismiss={removeToast} />
+        ))}
       </div>
     </ToastContext.Provider>
   );
@@ -134,4 +198,3 @@ export const useToast = () => {
   }
   return context.toast;
 };
-

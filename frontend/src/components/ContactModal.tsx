@@ -22,19 +22,19 @@ export const ContactModal: React.FC<ContactModalProps> = ({ contact, onClose }) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-asphalt-950/60 backdrop-blur-xs">
-      <div className="bg-white border border-concrete-300 rounded-lg shadow-xl max-w-md w-full overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+      <div className="bg-white border border-[#E2E8F0] rounded-lg shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-concrete-200 flex items-center justify-between bg-concrete-50">
+        <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
           <div className="flex items-center gap-2">
-            <Phone className="w-4 h-4 text-signal-orange" />
-            <h3 className="font-display font-bold text-asphalt-900 text-base">
+            <Phone className="w-4 h-4 text-[#0D9488]" />
+            <h3 className="font-display font-bold text-[#142D4E] text-base">
               Driver Operational Contact
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="text-asphalt-500 hover:text-asphalt-900 p-1 rounded hover:bg-concrete-200"
+            className="text-[#64748B] hover:text-[#142D4E] p-1 rounded hover:bg-[#E2E8F0] cursor-pointer transition"
           >
             <X className="w-4 h-4" />
           </button>
@@ -42,37 +42,37 @@ export const ContactModal: React.FC<ContactModalProps> = ({ contact, onClose }) 
 
         {/* Content */}
         <div className="p-5 space-y-4">
-          <div className="flex items-center justify-between p-3 bg-concrete-100 rounded border border-concrete-200">
+          <div className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
             <div>
-              <div className="text-xs text-asphalt-500 font-mono uppercase">PARKED IN</div>
-              <div className="font-display font-bold text-lg text-asphalt-900">{contact.spaceLabel}</div>
+              <div className="text-xs text-[#64748B] font-mono uppercase">PARKED IN</div>
+              <div className="font-display font-bold text-lg text-[#142D4E]">{contact.spaceLabel}</div>
             </div>
             <LicensePlate plate={contact.plateNumber} size="md" />
           </div>
 
           <div>
-            <label className="block text-xs font-mono uppercase text-asphalt-700 mb-1">
+            <label className="block text-xs font-mono uppercase text-[#334155] mb-1 font-semibold">
               Driver Name
             </label>
-            <div className="text-sm font-semibold text-asphalt-900">{contact.employeeName}</div>
+            <div className="text-sm font-semibold text-[#0F172A]">{contact.employeeName}</div>
           </div>
 
           <div>
-            <label className="block text-xs font-mono uppercase text-asphalt-700 mb-1">
+            <label className="block text-xs font-mono uppercase text-[#334155] mb-1 font-semibold">
               Private Phone Number
             </label>
             <div className="flex items-center gap-2">
-              <div className="flex-1 font-mono text-base font-bold text-asphalt-900 bg-concrete-50 border border-concrete-300 px-3 py-2 rounded select-all">
+              <div className="flex-1 font-mono text-base font-bold text-[#0F172A] bg-[#F8FAFC] border border-[#E2E8F0] px-3 py-2 rounded-md select-all">
                 {contact.phoneNumber}
               </div>
               <button
                 type="button"
                 onClick={handleCopy}
-                className="flex items-center gap-1.5 px-3.5 py-2.5 bg-asphalt-900 hover:bg-asphalt-800 text-white font-mono text-xs font-medium rounded transition btn-tactile cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-2.5 bg-[#0D9488] hover:bg-[#0F766E] text-white font-mono text-xs font-semibold rounded-md transition btn-tactile cursor-pointer shadow-sm"
               >
                 {copied ? (
                   <>
-                    <Check className="w-3.5 h-3.5 text-signal-emerald" />
+                    <Check className="w-3.5 h-3.5 text-white" />
                     <span>Copied</span>
                   </>
                 ) : (
@@ -85,20 +85,20 @@ export const ContactModal: React.FC<ContactModalProps> = ({ contact, onClose }) 
             </div>
           </div>
 
-          <div className="flex items-start gap-2 p-2.5 bg-amber-50 border border-amber-200 rounded text-xs text-amber-800">
-            <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2 p-2.5 bg-[#FEF3C7] border border-[#D97706]/30 rounded-lg text-xs text-[#92400E]">
+            <ShieldAlert className="w-4 h-4 text-[#D97706] shrink-0 mt-0.5" />
             <span>
-              Phone access is strictly audited for operational purposes (e.g. lights left on, blocked aisle). Do not share or store externally.
+              This contact information is accessed under security auditing. Use solely for operational vehicle relocation or driver assistance.
             </span>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 bg-concrete-50 border-t border-concrete-200 flex justify-end">
+        <div className="px-5 py-3 bg-[#F8FAFC] border-t border-[#E2E8F0] flex justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-1.5 text-xs font-mono font-medium text-asphalt-700 hover:text-asphalt-950 bg-white border border-concrete-300 rounded hover:bg-concrete-100"
+            className="px-4 py-2 bg-white border border-[#142D4E] text-[#142D4E] hover:bg-[#F1F5F9] rounded-md text-xs font-semibold font-mono cursor-pointer transition"
           >
             Close
           </button>
@@ -107,4 +107,3 @@ export const ContactModal: React.FC<ContactModalProps> = ({ contact, onClose }) 
     </div>
   );
 };
-

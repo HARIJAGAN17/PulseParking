@@ -98,6 +98,9 @@ export const api = {
 
     toggleStatus: (areaId: string, active: boolean) =>
       request<void>(`/admin/areas/${areaId}/status?active=${active}`, { method: 'PATCH' }),
+
+    delete: (areaId: string) =>
+      request<void>(`/admin/areas/${areaId}`, { method: 'DELETE' }),
   },
 
   spaces: {

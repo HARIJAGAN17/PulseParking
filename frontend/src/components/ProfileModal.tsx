@@ -45,19 +45,19 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ user, onClose, onUpd
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-asphalt-950/60 backdrop-blur-xs">
-      <div className="bg-white border border-concrete-300 rounded-lg shadow-xl max-w-md w-full overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+      <div className="bg-white border border-[#E2E8F0] rounded-lg shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-concrete-200 flex items-center justify-between bg-concrete-50">
+        <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
           <div className="flex items-center gap-2">
-            <UserIcon className="w-4 h-4 text-asphalt-900" />
-            <h3 className="font-display font-bold text-asphalt-900 text-base">
+            <UserIcon className="w-4 h-4 text-[#0D9488]" />
+            <h3 className="font-display font-bold text-[#142D4E] text-base">
               Profile & Vehicle Settings
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="text-asphalt-500 hover:text-asphalt-900 p-1 rounded hover:bg-concrete-200"
+            className="text-[#64748B] hover:text-[#142D4E] p-1 rounded hover:bg-[#E2E8F0] cursor-pointer transition"
           >
             <X className="w-4 h-4" />
           </button>
@@ -66,30 +66,14 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ user, onClose, onUpd
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded text-red-800 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+            <div className="p-3 bg-[#FEE2E2] border border-[#DC2626]/30 rounded-lg text-[#991B1B] text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-[#DC2626]" />
               <span>{error}</span>
             </div>
           )}
 
-          {success && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded text-emerald-800 text-xs flex items-center gap-2">
-              <Check className="w-4 h-4 text-signal-emerald shrink-0" />
-              <span>Profile updated successfully!</span>
-            </div>
-          )}
-
           <div>
-            <label className="block text-xs font-mono uppercase text-asphalt-700 mb-1">
-              Work Email Address
-            </label>
-            <div className="text-xs font-mono text-asphalt-500 bg-concrete-100 border border-concrete-200 px-3 py-2 rounded">
-              {user.email}
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-mono uppercase text-asphalt-700 mb-1 font-semibold">
+            <label className="block text-xs font-mono uppercase text-[#334155] mb-1 font-semibold">
               Full Name
             </label>
             <input
@@ -97,58 +81,81 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ user, onClose, onUpd
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-concrete-50 border border-concrete-300 rounded focus:ring-1 focus:ring-asphalt-900 outline-none"
+              className="w-full px-3 py-2 text-xs bg-white border border-[#E2E8F0] rounded-md focus:ring-2 focus:ring-[#0D9488] focus:border-[#0D9488] outline-none text-[#0F172A]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-mono uppercase text-asphalt-700 mb-1 font-semibold">
-              Private Phone Number
+            <label className="block text-xs font-mono uppercase text-[#334155] mb-1 font-semibold">
+              Work Email (Read Only)
+            </label>
+            <input
+              type="email"
+              disabled
+              value={user.email}
+              className="w-full px-3 py-2 text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[#64748B] font-mono cursor-not-allowed select-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-mono uppercase text-[#334155] mb-1 font-semibold">
+              Phone Number (For Valet Relocation Calls)
+            </label>
+            <input
+              type="tel"
+              required
+              placeholder="+91 98765 43210"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="w-full px-3 py-2 text-xs font-mono bg-white border border-[#E2E8F0] rounded-md focus:ring-2 focus:ring-[#0D9488] focus:border-[#0D9488] outline-none text-[#0F172A]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-mono uppercase text-[#334155] mb-1 font-semibold">
+              Primary Vehicle Plate
             </label>
             <input
               type="text"
               required
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              className="w-full px-3 py-2 text-sm font-mono bg-concrete-50 border border-concrete-300 rounded focus:ring-1 focus:ring-asphalt-900 outline-none"
-              placeholder="+91 98765 00000"
-            />
-            <p className="text-[11px] text-asphalt-500 mt-1">
-              Your phone number is strictly private and only visible to authorized valets during active parking.
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-xs font-mono uppercase text-asphalt-700 mb-1 font-semibold">
-              Vehicle Registration Plate
-            </label>
-            <input
-              type="text"
+              placeholder="e.g. KA01AB1234"
               value={plateNumber}
               onChange={(e) => setPlateNumber(e.target.value)}
-              className="w-full px-3 py-2 text-sm font-mono font-bold uppercase bg-concrete-50 border border-concrete-300 rounded focus:ring-1 focus:ring-asphalt-900 outline-none"
-              placeholder="e.g. KA01AB1234"
+              className="w-full px-3 py-2 text-sm font-mono font-bold uppercase bg-white border border-[#E2E8F0] rounded-md focus:ring-2 focus:ring-[#0D9488] focus:border-[#0D9488] outline-none text-[#0F172A]"
             />
-            <div className="mt-2 flex items-center gap-2">
-              <span className="text-[10px] text-asphalt-500 font-mono">PLATE PREVIEW:</span>
-              <LicensePlate plate={plateNumber || 'SAMPLE'} size="sm" />
-            </div>
           </div>
 
-          <div className="pt-3 border-t border-concrete-200 flex items-center justify-end gap-2">
+          {plateNumber && (
+            <div className="p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] flex items-center justify-between">
+              <span className="text-xs font-mono text-[#334155]">Preview Plate:</span>
+              <LicensePlate plate={plateNumber} size="md" />
+            </div>
+          )}
+
+          {/* Primary Action Button (Teal #0D9488) */}
+          <div className="pt-2 flex items-center gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-mono text-asphalt-600 hover:text-asphalt-950 bg-white border border-concrete-300 rounded"
+              className="flex-1 py-2.5 bg-white border border-[#142D4E] text-[#142D4E] hover:bg-[#F1F5F9] font-mono text-xs font-semibold rounded-md transition cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2 text-xs font-mono font-bold text-white bg-asphalt-900 hover:bg-asphalt-800 rounded transition btn-tactile cursor-pointer"
+              className="flex-1 py-2.5 bg-[#0D9488] hover:bg-[#0F766E] disabled:opacity-50 text-white font-mono font-bold text-xs rounded-md shadow-sm transition btn-tactile cursor-pointer flex items-center justify-center gap-2"
             >
-              {loading ? 'Saving...' : 'Save Profile'}
+              {loading ? (
+                <span>Saving updates...</span>
+              ) : success ? (
+                <>
+                  <Check className="w-4 h-4 text-white" />
+                  <span>Profile Saved</span>
+                </>
+              ) : (
+                <span>Save Changes</span>
+              )}
             </button>
           </div>
         </form>
@@ -156,4 +163,3 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ user, onClose, onUpd
     </div>
   );
 };
-

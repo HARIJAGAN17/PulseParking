@@ -1,7 +1,6 @@
 package com.parkpulse.parkingassignment;
 
 import com.parkpulse.audit.AuditService;
-import com.parkpulse.common.BadRequestException;
 import com.parkpulse.common.ConflictException;
 import com.parkpulse.occupancy.OccupancyService;
 import com.parkpulse.parkingarea.ParkingArea;
@@ -77,13 +76,12 @@ class ParkingAssignmentServiceTest {
         mockSpace.setStatus(SpaceStatus.AVAILABLE);
 
         mockEmployee = new User(
-                "sarah@acme.com", "hash", "Sarah Chen", "+919876500001", "KA01AB1234", "KA01AB1234", UserStatus.APPROVED
-        );
+                "sarah@acme.com", "hash", "Sarah Chen", "+919876500001", "KA01AB1234", "KA01AB1234",
+                UserStatus.APPROVED);
         mockEmployee.setId(employeeId);
 
         mockValet = new User(
-                "valet@acme.com", "hash", "Valet Operator", "+919876543210", null, null, UserStatus.APPROVED
-        );
+                "valet@acme.com", "hash", "Valet Operator", "+919876543210", null, null, UserStatus.APPROVED);
         mockValet.setId(valetId);
     }
 
@@ -98,7 +96,8 @@ class ParkingAssignmentServiceTest {
         when(userRepository.findById(employeeId)).thenReturn(Optional.of(mockEmployee));
         when(assignmentRepository.findActiveByEmployeeId(employeeId)).thenReturn(Optional.empty());
         when(userRepository.findById(valetId)).thenReturn(Optional.of(mockValet));
-        when(assignmentRepository.save(any(ParkingAssignment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(assignmentRepository.save(any(ParkingAssignment.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         ParkingAssignment result = assignmentService.assignVehicle(req, valetId, "127.0.0.1", AssignmentOrigin.VALET);
 
@@ -106,7 +105,8 @@ class ParkingAssignmentServiceTest {
         assertEquals(SpaceStatus.OCCUPIED, mockSpace.getStatus());
         assertEquals("KA01AB1234", result.getPlateNormalized());
         verify(spaceRepository).save(mockSpace);
-        verify(occupancyService).recordOccupancyEvent(eq(mockSpace), any(), eq(SpaceStatus.AVAILABLE), eq(SpaceStatus.OCCUPIED), eq("VALET"));
+        verify(occupancyService).recordOccupancyEvent(eq(mockSpace), any(), eq(SpaceStatus.AVAILABLE),
+                eq(SpaceStatus.OCCUPIED), eq("VALET"));
     }
 
     @Test
@@ -117,7 +117,8 @@ class ParkingAssignmentServiceTest {
 
         when(spaceRepository.findByIdWithOptimisticLock(spaceId)).thenReturn(Optional.of(mockSpace));
 
-        assertThrows(ConflictException.class, () -> assignmentService.assignVehicle(req, valetId, "127.0.0.1", AssignmentOrigin.VALET));
+        assertThrows(ConflictException.class,
+                () -> assignmentService.assignVehicle(req, valetId, "127.0.0.1", AssignmentOrigin.VALET));
     }
 
     @Test
@@ -127,9 +128,11 @@ class ParkingAssignmentServiceTest {
 
         when(spaceRepository.findByIdWithOptimisticLock(spaceId)).thenReturn(Optional.of(mockSpace));
         when(assignmentRepository.findActiveBySpaceId(spaceId)).thenReturn(Optional.empty());
-        when(assignmentRepository.findActiveByPlateNormalized("KA01AB1234")).thenReturn(Optional.of(new ParkingAssignment()));
+        when(assignmentRepository.findActiveByPlateNormalized("KA01AB1234"))
+                .thenReturn(Optional.of(new ParkingAssignment()));
 
-        assertThrows(ConflictException.class, () -> assignmentService.assignVehicle(req, valetId, "127.0.0.1", AssignmentOrigin.VALET));
+        assertThrows(ConflictException.class,
+                () -> assignmentService.assignVehicle(req, valetId, "127.0.0.1", AssignmentOrigin.VALET));
     }
 
     @Test
@@ -139,8 +142,7 @@ class ParkingAssignmentServiceTest {
         mockSpace.setStatus(SpaceStatus.OCCUPIED);
 
         ParkingAssignment assignment = new ParkingAssignment(
-                mockSpace, mockEmployee, mockValet, "KA01AB1234", "KA01AB1234", false, null, AssignmentOrigin.VALET
-        );
+                mockSpace, mockEmployee, mockValet, "KA01AB1234", "KA01AB1234", false, null, AssignmentOrigin.VALET);
         assignment.setId(assignmentId);
 
         when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.of(assignment));
@@ -152,7 +154,7 @@ class ParkingAssignmentServiceTest {
         assertNotNull(assignment.getReleasedAt());
         assertEquals(SpaceStatus.AVAILABLE, mockSpace.getStatus());
         verify(spaceRepository).save(mockSpace);
-        verify(occupancyService).recordOccupancyEvent(eq(mockSpace), eq(assignment), eq(SpaceStatus.OCCUPIED), eq(SpaceStatus.AVAILABLE), eq("VALET"));
+        verify(occupancyService).recordOccupancyEvent(eq(mockSpace), eq(assignment), eq(SpaceStatus.OCCUPIED),
+                eq(SpaceStatus.AVAILABLE), eq("VALET"));
     }
 }
-

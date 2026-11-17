@@ -47,38 +47,38 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4">
-      <div className="bg-white border border-concrete-300 rounded-lg shadow-xl max-w-md w-full overflow-hidden">
-        {/* Brand Banner */}
-        <div className="p-6 bg-asphalt-900 text-white border-b border-asphalt-800 text-center">
-          <div className="inline-flex w-12 h-12 rounded bg-asphalt-800 border border-asphalt-700 items-center justify-center font-display font-extrabold text-xl mb-3">
-            P<span className="text-signal-orange">P</span>
+      <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+        {/* Brand Banner (Deep Navy #142D4E) */}
+        <div className="p-6 bg-[#142D4E] text-white border-b border-[#1B3B66] text-center">
+          <div className="inline-flex w-12 h-12 rounded-lg bg-[#0D9488] items-center justify-center font-display font-extrabold text-xl mb-3 shadow-sm">
+            P<span className="text-white/90">P</span>
           </div>
-          <h2 className="font-display font-bold text-xl tracking-tight">PARKPULSE</h2>
-          <p className="text-xs font-mono text-concrete-300 uppercase tracking-widest mt-1">
-            Know Before You Go
+          <h2 className="font-display font-bold text-xl tracking-tight text-white">PARKPULSE</h2>
+          <p className="text-xs font-mono text-slate-300 uppercase tracking-widest mt-1">
+            Parking. Simplified. Always.
           </p>
         </div>
 
         {/* Pending Approval Screen */}
         {pendingApproval ? (
           <div className="p-6 text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto text-amber-600">
+            <div className="w-12 h-12 rounded-full bg-[#FEF3C7] border border-[#D97706]/30 flex items-center justify-center mx-auto text-[#D97706]">
               <Clock className="w-6 h-6" />
             </div>
-            <h3 className="font-display font-bold text-lg text-asphalt-900">
+            <h3 className="font-display font-bold text-lg text-[#142D4E]">
               Registration Submitted
             </h3>
-            <p className="text-xs text-asphalt-700 leading-relaxed max-w-xs mx-auto">
+            <p className="text-xs text-[#334155] leading-relaxed max-w-xs mx-auto">
               Your employee registration is pending administrator approval. Once approved by facility management, you will be able to log in to access live parking availability.
             </p>
-            <div className="pt-4 border-t border-concrete-200">
+            <div className="pt-4 border-t border-[#E2E8F0]">
               <button
                 type="button"
                 onClick={() => {
                   setPendingApproval(false);
                   setIsRegister(false);
                 }}
-                className="w-full py-2.5 bg-asphalt-900 text-white font-mono text-xs font-semibold rounded hover:bg-asphalt-800 transition"
+                className="w-full py-2.5 bg-[#0D9488] hover:bg-[#0F766E] text-white font-mono text-xs font-semibold rounded-md shadow-sm transition cursor-pointer"
               >
                 Back to Login
               </button>
@@ -87,21 +87,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
         ) : (
           /* Form Screen */
           <div className="p-6">
-            {/* Tabs */}
-            <div className="flex border-b border-concrete-200 mb-5 font-mono text-xs">
+            {/* Tabs (Active = Teal #0D9488) */}
+            <div className="flex border-b border-[#E2E8F0] mb-5 font-mono text-xs">
               <button
                 type="button"
                 onClick={() => {
                   setIsRegister(false);
                   setError(null);
                 }}
-                className={`flex-1 py-2 font-bold border-b-2 text-center transition ${
+                className={`flex-1 py-2 font-bold border-b-2 text-center transition cursor-pointer ${
                   !isRegister
-                    ? 'border-asphalt-900 text-asphalt-900'
-                    : 'border-transparent text-asphalt-500 hover:text-asphalt-800'
+                    ? 'border-[#0D9488] text-[#0D9488]'
+                    : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
                 }`}
               >
-                Sign In
+                Employee Login
               </button>
               <button
                 type="button"
@@ -109,126 +109,138 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
                   setIsRegister(true);
                   setError(null);
                 }}
-                className={`flex-1 py-2 font-bold border-b-2 text-center transition ${
+                className={`flex-1 py-2 font-bold border-b-2 text-center transition cursor-pointer ${
                   isRegister
-                    ? 'border-asphalt-900 text-asphalt-900'
-                    : 'border-transparent text-asphalt-500 hover:text-asphalt-800'
+                    ? 'border-[#0D9488] text-[#0D9488]'
+                    : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
                 }`}
               >
-                Self Register
+                New Registration
               </button>
             </div>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-800 text-xs flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div className="mb-4 p-3 bg-[#FEE2E2] border border-[#DC2626]/30 rounded-lg text-[#991B1B] text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-[#DC2626]" />
                 <span>{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
               {isRegister && (
-                <>
-                  <div>
-                    <label className="block text-xs font-mono uppercase text-asphalt-700 mb-1 font-semibold">
-                      Full Name
-                    </label>
-                    <div className="relative">
-                      <UserIcon className="w-4 h-4 text-asphalt-400 absolute left-3 top-2.5" />
-                      <input
-                        type="text"
-                        required
-                        placeholder="Sarah Chen"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        className="w-full pl-9 pr-3 py-2 text-xs bg-concrete-50 border border-concrete-300 rounded focus:ring-1 focus:ring-asphalt-900 outline-none"
-                      />
-                    </div>
+                <div>
+                  <label className="block text-xs font-mono uppercase text-[#334155] mb-1 font-semibold">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <UserIcon className="w-3.5 h-3.5 text-[#64748B] absolute left-2.5 top-3" />
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Jane Doe"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full pl-8 pr-3 py-2 text-xs bg-white border border-[#E2E8F0] rounded-md focus:ring-2 focus:ring-[#0D9488] focus:border-[#0D9488] outline-none text-[#0F172A]"
+                    />
                   </div>
-
-                  <div>
-                    <label className="block text-xs font-mono uppercase text-asphalt-700 mb-1 font-semibold">
-                      Phone Number (Private)
-                    </label>
-                    <div className="relative">
-                      <Phone className="w-4 h-4 text-asphalt-400 absolute left-3 top-2.5" />
-                      <input
-                        type="tel"
-                        required
-                        placeholder="+91 98765 00000"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="w-full pl-9 pr-3 py-2 text-xs font-mono bg-concrete-50 border border-concrete-300 rounded focus:ring-1 focus:ring-asphalt-900 outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono uppercase text-asphalt-700 mb-1 font-semibold">
-                      Vehicle Registration Plate
-                    </label>
-                    <div className="relative">
-                      <Car className="w-4 h-4 text-asphalt-400 absolute left-3 top-2.5" />
-                      <input
-                        type="text"
-                        required
-                        placeholder="KA01AB1234"
-                        value={plateNumber}
-                        onChange={(e) => setPlateNumber(e.target.value)}
-                        className="w-full pl-9 pr-3 py-2 text-xs font-mono font-bold uppercase bg-concrete-50 border border-concrete-300 rounded focus:ring-1 focus:ring-asphalt-900 outline-none"
-                      />
-                    </div>
-                    {plateNumber && (
-                      <div className="mt-1.5 flex items-center gap-2">
-                        <span className="text-[10px] text-asphalt-500 font-mono">PLATE PREVIEW:</span>
-                        <LicensePlate plate={plateNumber} size="sm" />
-                      </div>
-                    )}
-                  </div>
-                </>
+                </div>
               )}
 
               <div>
-                <label className="block text-xs font-mono uppercase text-asphalt-700 mb-1 font-semibold">
+                <label className="block text-xs font-mono uppercase text-[#334155] mb-1 font-semibold">
                   Work Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-asphalt-400 absolute left-3 top-2.5" />
+                  <Mail className="w-3.5 h-3.5 text-[#64748B] absolute left-2.5 top-3" />
                   <input
                     type="email"
                     required
-                    placeholder="sarah.chen@acme.com"
+                    placeholder="user@acme.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-xs font-mono bg-concrete-50 border border-concrete-300 rounded focus:ring-1 focus:ring-asphalt-900 outline-none"
+                    className="w-full pl-8 pr-3 py-2 text-xs bg-white border border-[#E2E8F0] rounded-md focus:ring-2 focus:ring-[#0D9488] focus:border-[#0D9488] outline-none text-[#0F172A]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-asphalt-700 mb-1 font-semibold">
+                <label className="block text-xs font-mono uppercase text-[#334155] mb-1 font-semibold">
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-asphalt-400 absolute left-3 top-2.5" />
+                  <Lock className="w-3.5 h-3.5 text-[#64748B] absolute left-2.5 top-3" />
                   <input
                     type="password"
                     required
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-xs bg-concrete-50 border border-concrete-300 rounded focus:ring-1 focus:ring-asphalt-900 outline-none"
+                    className="w-full pl-8 pr-3 py-2 text-xs bg-white border border-[#E2E8F0] rounded-md focus:ring-2 focus:ring-[#0D9488] focus:border-[#0D9488] outline-none text-[#0F172A]"
                   />
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-2.5 bg-asphalt-900 hover:bg-asphalt-800 disabled:opacity-50 text-white font-mono text-xs font-bold rounded shadow-sm transition btn-tactile cursor-pointer"
-              >
-                {loading ? 'Processing...' : isRegister ? 'Submit for Approval' : 'Access ParkPulse'}
-              </button>
+              {isRegister && (
+                <>
+                  <div>
+                    <label className="block text-xs font-mono uppercase text-[#334155] mb-1 font-semibold">
+                      Mobile Phone Number
+                    </label>
+                    <div className="relative">
+                      <Phone className="w-3.5 h-3.5 text-[#64748B] absolute left-2.5 top-3" />
+                      <input
+                        type="tel"
+                        required
+                        placeholder="+91 98765 43210"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        className="w-full pl-8 pr-3 py-2 text-xs font-mono bg-white border border-[#E2E8F0] rounded-md focus:ring-2 focus:ring-[#0D9488] focus:border-[#0D9488] outline-none text-[#0F172A]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono uppercase text-[#334155] mb-1 font-semibold">
+                      Vehicle License Plate
+                    </label>
+                    <div className="relative">
+                      <Car className="w-3.5 h-3.5 text-[#64748B] absolute left-2.5 top-3" />
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. KA04AB1234"
+                        value={plateNumber}
+                        onChange={(e) => setPlateNumber(e.target.value)}
+                        className="w-full pl-8 pr-3 py-2 text-xs font-mono font-bold uppercase bg-white border border-[#E2E8F0] rounded-md focus:ring-2 focus:ring-[#0D9488] focus:border-[#0D9488] outline-none text-[#0F172A]"
+                      />
+                    </div>
+                  </div>
+
+                  {plateNumber && (
+                    <div className="p-2.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] flex items-center justify-between">
+                      <span className="text-[11px] font-mono text-[#334155]">Plate Preview:</span>
+                      <LicensePlate plate={plateNumber} size="sm" />
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Primary Submit Button (Teal #0D9488) */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-2.5 bg-[#0D9488] hover:bg-[#0F766E] disabled:opacity-50 text-white font-mono font-bold text-xs rounded-md shadow-sm transition btn-tactile cursor-pointer"
+                >
+                  {loading ? (
+                    <span>Processing...</span>
+                  ) : isRegister ? (
+                    <span>Submit Registration for Approval</span>
+                  ) : (
+                    <span>Sign In to Parking Deck</span>
+                  )}
+                </button>
+              </div>
             </form>
           </div>
         )}

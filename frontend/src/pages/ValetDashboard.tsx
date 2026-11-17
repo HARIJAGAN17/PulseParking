@@ -95,46 +95,46 @@ export const ValetDashboard: React.FC<ValetDashboardProps> = ({ summary, onRefre
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      {/* 1. Valet Operations Status Banner */}
-      <div className="bg-asphalt-900 text-white rounded-lg p-5 sm:p-6 shadow-tactile flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* 1. Valet Operations Status Banner (Deep Navy #142D4E) */}
+      <div className="bg-[#142D4E] text-white rounded-lg p-5 sm:p-6 shadow-tactile flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-2 h-2 rounded-full bg-signal-emerald animate-pulse" />
-            <span className="font-mono text-xs font-bold uppercase text-signal-emerald tracking-wider">
-              OPERATIONAL TERMINAL
+            <span className="w-2 h-2 rounded-full bg-[#0D9488] animate-pulse" />
+            <span className="font-mono text-xs font-bold uppercase text-teal-300 tracking-wider">
+              VALET OPERATIONS TERMINAL
             </span>
           </div>
-          <h2 className="font-display font-extrabold text-2xl tracking-tight">
+          <h2 className="font-display font-extrabold text-2xl tracking-tight text-white">
             Valet Facility Management
           </h2>
-          <p className="text-xs text-asphalt-400 mt-0.5">
-            Tap an open bay to allocate an arriving vehicle, or manage active parked vehicles.
+          <p className="text-xs text-slate-300 mt-0.5">
+            Select an available bay to assign an incoming vehicle, or release spaces as vehicles depart.
           </p>
         </div>
 
         {summary && (
           <div className="flex items-center gap-3 font-mono text-xs">
-            <div className="bg-asphalt-800 px-3.5 py-2 rounded border border-asphalt-700 text-center">
-              <div className="text-xl font-bold text-signal-emerald">{summary.availableSpaces}</div>
-              <div className="text-[10px] text-asphalt-400 uppercase">Available Bays</div>
+            <div className="bg-[#0E1F36] px-4 py-2.5 rounded-lg border border-[#1B3B66] text-center min-w-[100px]">
+              <div className="text-xl font-bold text-[#16A34A]">{summary.availableSpaces}</div>
+              <div className="text-[10px] text-slate-300 uppercase font-semibold">Available</div>
             </div>
-            <div className="bg-asphalt-800 px-3.5 py-2 rounded border border-asphalt-700 text-center">
-              <div className="text-xl font-bold text-signal-amber">{summary.occupiedSpaces}</div>
-              <div className="text-[10px] text-asphalt-400 uppercase">Active Parked</div>
+            <div className="bg-[#0E1F36] px-4 py-2.5 rounded-lg border border-[#1B3B66] text-center min-w-[100px]">
+              <div className="text-xl font-bold text-[#DC2626]">{summary.occupiedSpaces}</div>
+              <div className="text-[10px] text-slate-300 uppercase font-semibold">Occupied</div>
             </div>
           </div>
         )}
       </div>
 
-      {/* 2. Navigation Tabs */}
-      <div className="flex items-center justify-between border-b border-concrete-300 pb-2">
+      {/* 2. Navigation Tabs (Selected Tab = Teal #0D9488) */}
+      <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2">
         <div className="flex items-center gap-2 font-mono text-xs">
           <button
             onClick={() => setActiveTab('floor')}
-            className={`px-3 py-1.5 rounded transition font-bold ${
+            className={`px-3.5 py-1.5 rounded-md transition font-bold cursor-pointer ${
               activeTab === 'floor'
-                ? 'bg-asphalt-900 text-white'
-                : 'bg-concrete-200 text-asphalt-700 hover:bg-concrete-300'
+                ? 'bg-[#0D9488] text-white shadow-sm'
+                : 'bg-white border border-[#E2E8F0] text-[#334155] hover:bg-[#F1F5F9]'
             }`}
           >
             Floor Bay Blueprint
@@ -144,14 +144,16 @@ export const ValetDashboard: React.FC<ValetDashboardProps> = ({ summary, onRefre
               setActiveTab('queue');
               fetchActiveAssignments();
             }}
-            className={`px-3 py-1.5 rounded transition font-bold flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-md transition font-bold flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'queue'
-                ? 'bg-asphalt-900 text-white'
-                : 'bg-concrete-200 text-asphalt-700 hover:bg-concrete-300'
+                ? 'bg-[#0D9488] text-white shadow-sm'
+                : 'bg-white border border-[#E2E8F0] text-[#334155] hover:bg-[#F1F5F9]'
             }`}
           >
             <span>Parked Vehicles Queue</span>
-            <span className="px-1.5 py-0.2 bg-signal-orange text-white text-[10px] rounded-full">
+            <span className={`px-1.5 py-0.2 text-[10px] rounded-full font-bold ${
+              activeTab === 'queue' ? 'bg-[#0E1F36] text-white' : 'bg-[#E2E8F0] text-[#142D4E]'
+            }`}>
               {activeAssignments.length}
             </span>
           </button>
@@ -163,7 +165,7 @@ export const ValetDashboard: React.FC<ValetDashboardProps> = ({ summary, onRefre
             fetchActiveAssignments();
             onRefreshSummary();
           }}
-          className="p-1.5 text-asphalt-500 hover:text-asphalt-900 rounded hover:bg-concrete-200"
+          className="p-1.5 text-[#64748B] hover:text-[#142D4E] rounded hover:bg-[#F1F5F9] cursor-pointer transition"
           title="Refresh Data"
         >
           <RefreshCw className="w-4 h-4" />
@@ -175,15 +177,15 @@ export const ValetDashboard: React.FC<ValetDashboardProps> = ({ summary, onRefre
         <div className="space-y-4">
           {/* Floor Level Selector */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2">
-            <span className="font-mono text-xs text-asphalt-500 uppercase shrink-0">SELECT DECK:</span>
+            <span className="font-mono text-xs text-[#64748B] uppercase shrink-0 font-semibold">SELECT DECK:</span>
             {areas.map((a) => (
               <button
                 key={a.id}
                 onClick={() => setSelectedAreaId(a.id)}
-                className={`px-3 py-1.5 rounded font-mono text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                className={`px-3 py-1.5 rounded-md font-mono text-xs font-bold transition whitespace-nowrap cursor-pointer ${
                   selectedAreaId === a.id
-                    ? 'bg-signal-orange text-white'
-                    : 'bg-white border border-concrete-300 text-asphalt-700 hover:bg-concrete-100'
+                    ? 'bg-[#0D9488] text-white shadow-sm'
+                    : 'bg-white border border-[#E2E8F0] text-[#334155] hover:bg-[#F1F5F9]'
                 }`}
               >
                 {a.name} ({a.levelCode})
@@ -196,60 +198,61 @@ export const ValetDashboard: React.FC<ValetDashboardProps> = ({ summary, onRefre
             isValetOrAdmin={true}
             onSelectSpace={handleSelectSpace}
             onContactValet={handleViewContact}
+            selectedSpaceId={selectedSpace?.spaceId}
           />
         </div>
       ) : (
         /* Queue View: List of all active parked vehicles */
-        <div className="bg-white border border-concrete-300 rounded-lg shadow-tactile overflow-hidden">
-          <div className="p-4 bg-concrete-50 border-b border-concrete-200 flex items-center justify-between">
-            <h3 className="font-display font-bold text-sm text-asphalt-900">
+        <div className="bg-white border border-[#E2E8F0] rounded-lg shadow-tactile overflow-hidden">
+          <div className="p-4 bg-[#F8FAFC] border-b border-[#E2E8F0] flex items-center justify-between">
+            <h3 className="font-display font-bold text-sm text-[#142D4E]">
               Active Parked Vehicles ({activeAssignments.length})
             </h3>
-            <span className="text-xs font-mono text-asphalt-500">
+            <span className="text-xs font-mono text-[#64748B]">
               Click 'Release' upon vehicle exit
             </span>
           </div>
 
           {activeAssignments.length === 0 ? (
-            <div className="p-12 text-center text-xs font-mono text-asphalt-500">
+            <div className="p-12 text-center text-xs font-mono text-[#64748B]">
               No vehicles currently parked in facility.
             </div>
           ) : (
-            <div className="divide-y divide-concrete-200">
+            <div className="divide-y divide-[#E2E8F0]">
               {activeAssignments.map((a) => (
-                <div key={a.assignmentId} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-concrete-50 transition">
+                <div key={a.assignmentId} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[#F8FAFC] transition">
                   <div className="flex items-center gap-4">
                     <LicensePlate plate={a.plateNumber} size="md" />
                     <div>
-                      <div className="font-display font-bold text-base text-asphalt-900">
+                      <div className="font-display font-bold text-base text-[#142D4E]">
                         {a.spaceLabel}
                       </div>
-                      <div className="text-xs font-mono text-asphalt-500">
+                      <div className="text-xs font-mono text-[#64748B]">
                         {a.buildingName} · {a.areaName} ({a.levelCode})
                       </div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4 text-xs font-mono">
-                    <div className="text-asphalt-500 hidden sm:block">
+                    <div className="text-[#64748B] hidden sm:block">
                       Parked at {new Date(a.assignedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
 
                     <button
                       type="button"
                       onClick={() => handleViewContact(a.assignmentId)}
-                      className="px-3 py-1.5 bg-white border border-concrete-300 hover:bg-concrete-100 rounded text-asphalt-900 font-medium flex items-center gap-1.5 transition cursor-pointer"
+                      className="px-3 py-1.5 bg-white border border-[#142D4E] text-[#142D4E] hover:bg-[#F1F5F9] rounded-md font-medium flex items-center gap-1.5 transition cursor-pointer"
                     >
-                      <Phone className="w-3.5 h-3.5 text-signal-orange" />
+                      <Phone className="w-3.5 h-3.5 text-[#0D9488]" />
                       <span>Contact</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => handleReleaseAssignment(a.assignmentId)}
-                      className="px-3 py-1.5 bg-asphalt-900 hover:bg-asphalt-800 text-white rounded font-bold transition btn-tactile cursor-pointer"
+                      className="px-3.5 py-1.5 bg-[#DC2626] hover:bg-red-700 text-white rounded-md font-bold transition btn-tactile cursor-pointer"
                     >
-                      Release
+                      Release Space
                     </button>
                   </div>
                 </div>

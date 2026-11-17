@@ -8,7 +8,6 @@ import com.parkpulse.occupancy.OccupancyEventRepository;
 import com.parkpulse.parkingarea.ParkingArea;
 import com.parkpulse.parkingarea.ParkingAreaRepository;
 import com.parkpulse.parkingassignment.AssignmentOrigin;
-import com.parkpulse.parkingassignment.AssignmentStatus;
 import com.parkpulse.parkingassignment.ParkingAssignment;
 import com.parkpulse.parkingassignment.ParkingAssignmentRepository;
 import com.parkpulse.parkingspace.ParkingSpace;
@@ -87,7 +86,6 @@ public class DataInitializer implements CommandLineRunner {
 
         Role adminRole = roleRepository.findById(Role.ROLE_ADMIN).orElseThrow();
         Role valetRole = roleRepository.findById(Role.ROLE_VALET).orElseThrow();
-        Role empRole = roleRepository.findById(Role.ROLE_EMPLOYEE).orElseThrow();
 
         // 1. Initial Admin
         User admin = new User(
@@ -101,7 +99,7 @@ public class DataInitializer implements CommandLineRunner {
         admin.getRoles().add(adminRole);
         userRepository.save(admin);
 
-        // 2. Initial Valet
+        // 2. Initial Valet Operator
         User valet = new User(
                 "valet@parkpulse.com",
                 passwordEncoder.encode("Valet@123456"),
@@ -113,43 +111,7 @@ public class DataInitializer implements CommandLineRunner {
         valet.getRoles().add(valetRole);
         userRepository.save(valet);
 
-        // 3. Approved Employee with parked vehicle
-        User sarah = new User(
-                "sarah.chen@acme.com",
-                passwordEncoder.encode("Employee@123456"),
-                "Sarah Chen",
-                "+91 98765 00001",
-                "KA01AB1234",
-                PlateNormalizer.normalize("KA01AB1234"),
-                UserStatus.APPROVED);
-        sarah.getRoles().add(empRole);
-        userRepository.save(sarah);
-
-        // 4. Approved Employee without parked vehicle
-        User david = new User(
-                "david.miller@acme.com",
-                passwordEncoder.encode("Employee@123456"),
-                "David Miller",
-                "+91 98765 00002",
-                "KA03CD5678",
-                PlateNormalizer.normalize("KA03CD5678"),
-                UserStatus.APPROVED);
-        david.getRoles().add(empRole);
-        userRepository.save(david);
-
-        // 5. Pending Employee (awaiting approval)
-        User alex = new User(
-                "alex.kumar@acme.com",
-                passwordEncoder.encode("Employee@123456"),
-                "Alex Kumar",
-                "+91 98765 00003",
-                "MH02EF9012",
-                PlateNormalizer.normalize("MH02EF9012"),
-                UserStatus.PENDING);
-        alex.getRoles().add(empRole);
-        userRepository.save(alex);
-
-        // 6. Building: Vismaya Building
+        // 3. Baseline Facility: Vismaya Building
         Building vismaya = new Building(
                 "Vismaya Building",
                 "VSM-01",
@@ -157,33 +119,23 @@ public class DataInitializer implements CommandLineRunner {
                 1);
         buildingRepository.save(vismaya);
 
-        // 7. Floors / Parking Areas
+        // 4. Floors / Parking Areas
         ParkingArea b1 = parkingAreaRepository.save(new ParkingArea(vismaya, "Basement 1", "B1", 1));
         ParkingArea gf = parkingAreaRepository.save(new ParkingArea(vismaya, "Ground Floor", "GF", 2));
         ParkingArea l1 = parkingAreaRepository.save(new ParkingArea(vismaya, "Floor 1", "L1", 3));
 
-        // 8. Spaces
+        // 5. Clean Parking Spaces (All AVAILABLE - ready for real vehicle parking)
         // Basement 1 (B1-01 to B1-06)
         for (int i = 1; i <= 6; i++) {
             ParkingSpace space = new ParkingSpace(b1, String.format("B1-%02d", i), i);
-            if (i == 5) {
-                space.setStatus(SpaceStatus.OUT_OF_SERVICE);
-            }
             space = parkingSpaceRepository.save(space);
             occupancyEventRepository.save(new OccupancyEvent(space, null, "NONE", space.getStatus().name(), "SYSTEM"));
         }
 
         // Ground Floor (GF-01 to GF-08)
-        ParkingSpace sarahSpace = null;
         for (int i = 1; i <= 8; i++) {
             ParkingSpace space = new ParkingSpace(gf, String.format("GF-%02d", i), i);
-            if (i == 3) {
-                space.setStatus(SpaceStatus.OCCUPIED);
-            }
             space = parkingSpaceRepository.save(space);
-            if (i == 3) {
-                sarahSpace = space;
-            }
             occupancyEventRepository.save(new OccupancyEvent(space, null, "NONE", space.getStatus().name(), "SYSTEM"));
         }
 
@@ -194,28 +146,6 @@ public class DataInitializer implements CommandLineRunner {
             occupancyEventRepository.save(new OccupancyEvent(space, null, "NONE", space.getStatus().name(), "SYSTEM"));
         }
 
-        // 9. Active Assignment for Sarah Chen in GF-03
-        if (sarahSpace != null) {
-            ParkingAssignment assignment = new ParkingAssignment(
-                    sarahSpace,
-                    sarah,
-                    valet,
-                    "KA01AB1234",
-                    PlateNormalizer.normalize("KA01AB1234"),
-                    false,
-                    null,
-                    AssignmentOrigin.VALET);
-            assignment.setAssignedAt(Instant.now().minus(2, ChronoUnit.HOURS));
-            assignment = assignmentRepository.save(assignment);
-
-            occupancyEventRepository.save(new OccupancyEvent(
-                    sarahSpace,
-                    assignment,
-                    SpaceStatus.AVAILABLE.name(),
-                    SpaceStatus.OCCUPIED.name(),
-                    "VALET"));
-        }
-
-        log.info("Data seeding finished successfully: Vismaya Building configured with 20 parking spaces.");
+        log.info("Baseline facility setup completed: 1 Admin, 1 Valet, clean facility structure with 20 available spaces ready.");
     }
 }

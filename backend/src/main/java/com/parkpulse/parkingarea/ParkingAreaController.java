@@ -63,5 +63,12 @@ public class ParkingAreaController {
         parkingAreaService.setAreaActive(areaId, active);
         return ResponseEntity.ok(ApiResponse.message("Parking area status updated"));
     }
+
+    @DeleteMapping("/admin/areas/{areaId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deleteArea(@PathVariable UUID areaId) {
+        parkingAreaService.deleteArea(areaId);
+        return ResponseEntity.ok(ApiResponse.message("Floor deck deactivated successfully"));
+    }
 }
 

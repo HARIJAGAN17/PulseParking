@@ -2,6 +2,7 @@ package com.parkpulse.parkingspace;
 
 import com.parkpulse.common.ApiResponse;
 import com.parkpulse.parkingspace.dto.ParkingSpaceCreateRequest;
+import com.parkpulse.parkingspace.dto.ParkingSpaceDto;
 import com.parkpulse.security.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/admin")
 public class ParkingSpaceController {
 
     private final ParkingSpaceService spaceService;
@@ -23,45 +24,41 @@ public class ParkingSpaceController {
         this.spaceService = spaceService;
     }
 
-    @PostMapping("/admin/areas/{areaId}/spaces")
+    @PostMapping("/areas/{areaId}/spaces")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<ParkingSpace>> createSpace(
+    public ResponseEntity<ApiResponse<ParkingSpaceDto>> createSpace(
             @PathVariable UUID areaId,
-            @Valid @RequestBody ParkingSpaceCreateRequest request
-    ) {
+            @Valid @RequestBody ParkingSpaceCreateRequest request) {
         ParkingSpace space = spaceService.createSpace(areaId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("Parking space created successfully", space));
+                .body(ApiResponse.ok("Parking space created successfully", ParkingSpaceDto.fromEntity(space)));
     }
 
-    @PutMapping("/admin/spaces/{id}")
+    @PutMapping("/spaces/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<ParkingSpace>> updateSpace(
+    public ResponseEntity<ApiResponse<ParkingSpaceDto>> updateSpace(
             @PathVariable UUID id,
-            @Valid @RequestBody ParkingSpaceCreateRequest request
-    ) {
+            @Valid @RequestBody ParkingSpaceCreateRequest request) {
         ParkingSpace space = spaceService.updateSpace(id, request);
-        return ResponseEntity.ok(ApiResponse.ok("Parking space updated successfully", space));
+        return ResponseEntity.ok(ApiResponse.ok("Parking space updated successfully", ParkingSpaceDto.fromEntity(space)));
     }
 
-    @PatchMapping("/admin/spaces/{id}/status")
+    @PatchMapping("/spaces/{id}/status")
     @PreAuthorize("hasAnyRole('ADMIN', 'VALET')")
     public ResponseEntity<ApiResponse<Void>> updateSpaceStatus(
             @PathVariable UUID id,
             @RequestParam SpaceStatus status,
             @AuthenticationPrincipal UserPrincipal principal,
-            HttpServletRequest httpRequest
-    ) {
+            HttpServletRequest httpRequest) {
         String ip = httpRequest.getRemoteAddr();
         spaceService.updateSpaceStatus(id, status, principal.getId(), ip);
         return ResponseEntity.ok(ApiResponse.message("Space status updated to " + status));
     }
 
-    @DeleteMapping("/admin/spaces/{id}")
+    @DeleteMapping("/spaces/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteSpace(@PathVariable UUID id) {
         spaceService.deleteSpace(id);
         return ResponseEntity.ok(ApiResponse.message("Space deactivated successfully"));
     }
 }
-

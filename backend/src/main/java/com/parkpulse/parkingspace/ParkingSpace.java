@@ -16,6 +16,7 @@ public class ParkingSpace implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "parking_area_id", nullable = false)
     private ParkingArea parkingArea;
